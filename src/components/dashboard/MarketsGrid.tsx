@@ -5,10 +5,10 @@ import { INSTRUMENTS } from '@/lib/chartConfig';
 import ChartCard from '@/components/charts/ChartCard';
 import type { Period } from '@/types/market';
 
-const PERIODS: Period[] = ['1D', '1W', '1M', '3M', '6M', '12M'];
+const PERIODS: Period[] = ['1D', '1W', '1M'];
 
 export default function MarketsGrid() {
-  const [period, setPeriod] = useState<Period>('12M');
+  const [period, setPeriod] = useState<Period>('1D');
 
   return (
     <div>

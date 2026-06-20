@@ -3,9 +3,9 @@
 import dynamic from 'next/dynamic';
 import { useMemo } from 'react';
 import type { Instrument, Period } from '@/types/market';
-import { PERIOD_DAYS } from '@/types/market';
 import { useChartData } from '@/hooks/useChartData';
 import { calculateEMA } from '@/lib/ema';
+import { aggregateWeekly, aggregateMonthly } from '@/lib/aggregate';
 
 const CandlestickChart = dynamic(() => import('./CandlestickChart'), { ssr: false });
 
@@ -29,32 +29,25 @@ export default function ChartCard({ instrument, period }: Props) {
       };
     }
 
-    // EMA calculated on full dataset for accuracy
-    const closes = data.map((b) => b.close);
+    const bars = period === '1W' ? aggregateWeekly(data) : period === '1M' ? aggregateMonthly(data) : data;
+
+    const closes = bars.map((b) => b.close);
     const ema50 = calculateEMA(closes, 50);
     const ema200 = calculateEMA(closes, 200);
 
-    // Day change always uses the full dataset's last two bars
-    const last = data[data.length - 1];
-    const prev = data[data.length - 2];
-    const dayChange = last.close - prev.close;
-    const dayChangePct = (dayChange / prev.close) * 100;
-    const borderColor = dayChange >= 0 ? 'border-green-500' : 'border-red-500';
-    const changeColor = dayChange >= 0 ? 'text-green-600' : 'text-red-600';
-    const sign = dayChange >= 0 ? '+' : '';
-    const changeText = `${sign}${dayChangePct.toFixed(2)}%`;
-
-    // Slice to the selected period window
-    const cutoff = new Date();
-    cutoff.setDate(cutoff.getDate() - PERIOD_DAYS[period]);
-    const cutoffStr = cutoff.toISOString().slice(0, 10);
-    const startIdx = data.findIndex((b) => b.time >= cutoffStr);
-    const idx = startIdx >= 0 ? startIdx : 0;
+    const last = bars[bars.length - 1];
+    const prev = bars[bars.length - 2];
+    const change = last.close - prev.close;
+    const changePct = (change / prev.close) * 100;
+    const borderColor = change >= 0 ? 'border-green-500' : 'border-red-500';
+    const changeColor = change >= 0 ? 'text-green-600' : 'text-red-600';
+    const sign = change >= 0 ? '+' : '';
+    const changeText = `${sign}${changePct.toFixed(2)}%`;
 
     return {
-      slicedData: data.slice(idx),
-      slicedEma50: ema50.slice(idx),
-      slicedEma200: ema200.slice(idx),
+      slicedData: bars,
+      slicedEma50: ema50,
+      slicedEma200: ema200,
       borderColor,
       changeText,
       changeColor,
