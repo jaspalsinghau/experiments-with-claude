@@ -47,7 +47,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          NEXT_PUBLIC_BASE_PATH: /markets-dashboard
+          NEXT_PUBLIC_BASE_PATH: /experiments-with-claude
 
       - uses: actions/configure-pages@v4
 

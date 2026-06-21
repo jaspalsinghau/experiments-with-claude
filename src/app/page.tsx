@@ -13,8 +13,8 @@ export default function HomePage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
       <div className="mb-10">
-        <h1 className="text-3xl font-bold text-gray-900">Markets Dashboard</h1>
-        <p className="mt-2 text-gray-500">Your personal financial market dashboards.</p>
+        <h1 className="text-3xl font-bold text-gray-900">Experiments with Claude</h1>
+        <p className="mt-2 text-gray-500">Personal experiments and dashboards built with Claude Code.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

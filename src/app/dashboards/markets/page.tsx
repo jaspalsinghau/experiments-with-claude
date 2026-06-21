@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import MarketsGrid from '@/components/dashboard/MarketsGrid';
 
 export const metadata: Metadata = {
-  title: 'Markets Overview | Markets Dashboard',
+  title: 'Markets Overview | Experiments with Claude',
 };
 
 export default function MarketsPage() {

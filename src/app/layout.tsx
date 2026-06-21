@@ -3,8 +3,8 @@ import './globals.css';
 import NavBar from '@/components/NavBar';
 
 export const metadata: Metadata = {
-  title: 'Markets Dashboard',
-  description: 'Personal stock market dashboard',
+  title: 'Experiments with Claude',
+  description: 'Personal experiments and dashboards built with Claude Code.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
