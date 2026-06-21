@@ -39,122 +39,18 @@ export default function HomePage() {
   };
 
   return (
-    <>
-      {/* ── Hero ─────────────────────────────────────────── */}
-      <section style={{
-        background: 'var(--ink)',
-        position: 'relative',
-        overflow: 'hidden',
-        padding: '7rem 1.5rem 6rem',
-      }}>
-        {/* Grid overlay */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: 'linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px)',
-          backgroundSize: '54px 54px',
-          pointerEvents: 'none',
-        }} />
-        {/* Amber radial glow */}
-        <div style={{
-          position: 'absolute',
-          top: '-120px',
-          right: '-80px',
-          width: 600,
-          height: 600,
-          background: 'radial-gradient(circle, rgba(245,166,35,0.18) 0%, transparent 65%)',
-          pointerEvents: 'none',
-        }} />
+    <div className="max-w-4xl mx-auto px-4 py-12">
+      <div className="mb-10">
+        <h1 className="text-3xl font-bold text-gray-900">Experiments with Claude</h1>
+        <p className="mt-2 text-gray-500">Personal experiments and dashboards built with Claude Code.</p>
+      </div>
 
-        <div style={{ maxWidth: 'var(--maxw)', margin: '0 auto', position: 'relative' }}>
-          {/* Badge */}
-          <div style={{ marginBottom: '1.75rem' }}>
-            <span style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              padding: '0.375rem 0.875rem',
-              borderRadius: 999,
-              border: '1px solid rgba(245,166,35,0.4)',
-              background: 'var(--accent-soft)',
-              fontSize: '0.8125rem',
-              fontWeight: 500,
-              color: 'var(--accent)',
-              letterSpacing: '0.01em',
-            }}>
-              <span className="pulse-dot" style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--accent)', flexShrink: 0 }} />
-              Designed &amp; built with Claude Code
-            </span>
-          </div>
-
-          {/* H1 */}
-          <h1 style={{
-            fontSize: 'clamp(2.25rem, 5vw, 3.5rem)',
-            fontWeight: 800,
-            lineHeight: 1.1,
-            letterSpacing: '-0.03em',
-            color: 'var(--paper)',
-            marginBottom: '1.25rem',
-            maxWidth: 680,
-          }}>
-            Personal experiments{' '}
-            <span style={{ color: 'var(--accent)' }}>built with Claude Code.</span>
-          </h1>
-
-          {/* Role line */}
-          <p style={{
-            fontSize: '0.9375rem',
-            color: 'var(--grey-500)',
-            letterSpacing: '0.04em',
-            textTransform: 'uppercase',
-            fontWeight: 500,
-            marginBottom: '1.5rem',
-          }}>
-            JavaScript · Next.js · TypeScript · AI-assisted development
-          </p>
-
-          {/* Summary */}
-          <p style={{
-            fontSize: '1.0625rem',
-            color: 'var(--grey-300)',
-            lineHeight: 1.7,
-            maxWidth: 560,
-            marginBottom: '2.5rem',
-          }}>
-            A collection of real-world dashboards and tools I build using Claude Code — shipping ideas faster than I ever could alone.
-          </p>
-
-          {/* CTAs */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-            <Link href="/dashboards/markets" className="btn btn--primary">
-              View Markets Overview
-            </Link>
-            <a
-              href="https://github.com/jaspalsinghau/experiments-with-claude"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn--ghost"
-            >
-              View on GitHub ↗
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Experiments ──────────────────────────────────── */}
-      <section style={{ background: 'var(--grey-50)', padding: '5rem 1.5rem' }}>
-        <div style={{ maxWidth: 'var(--maxw)', margin: '0 auto' }}>
-          <p
-            ref={(el) => addRef(el, 0)}
-            className="reveal"
-            style={{
-              fontSize: '0.8125rem',
-              fontWeight: 700,
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: 'var(--accent)',
-              marginBottom: '0.625rem',
-            }}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {dashboards.map((d) => (
+          <Link
+            key={d.href}
+            href={d.href}
+            className="group flex flex-col gap-2 rounded-xl border-2 border-gray-200 bg-white p-6 shadow-sm hover:border-blue-400 hover:shadow-md transition-all"
           >
             What I&apos;m building
           </p>
