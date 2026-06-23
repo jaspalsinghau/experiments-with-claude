@@ -63,7 +63,7 @@ export default function ChartCard({ instrument, period }: Props) {
         )}
       </div>
 
-      <div className="flex-1 min-h-0 h-96">
+      <div className="h-96">
         {isLoading && (
           <div className="w-full h-full flex items-center justify-center">
             <div className="text-xs text-gray-400">Loading...</div>
