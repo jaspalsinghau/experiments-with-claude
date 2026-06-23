@@ -17,7 +17,7 @@ function StatusIndicator({ lastDate }: { lastDate: string }) {
   const config = statusConfig[staleness];
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center justify-center gap-2">
       <span className={`inline-block w-2 h-2 rounded-full ${config.dot}`} />
       <span className={`text-xs font-medium ${config.text}`}>{config.label}</span>
     </div>

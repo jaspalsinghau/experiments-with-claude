@@ -24,8 +24,7 @@ export default function CandlestickChart({ data, ema50, ema200 }: Props) {
     if (!containerRef.current) return;
 
     const chart = createChart(containerRef.current, {
-      width: containerRef.current.clientWidth,
-      height: containerRef.current.clientHeight,
+      autoSize: true,
       layout: {
         background: { color: '#ffffff' },
         textColor: '#374151',
@@ -94,18 +93,7 @@ export default function CandlestickChart({ data, ema50, ema200 }: Props) {
 
     chart.timeScale().fitContent();
 
-    const observer = new ResizeObserver(() => {
-      if (containerRef.current && chartRef.current) {
-        chartRef.current.applyOptions({
-          width: containerRef.current.clientWidth,
-          height: containerRef.current.clientHeight,
-        });
-      }
-    });
-    observer.observe(containerRef.current);
-
     return () => {
-      observer.disconnect();
       chart.remove();
       chartRef.current = null;
     };
