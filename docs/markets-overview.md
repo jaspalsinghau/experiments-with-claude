@@ -4,7 +4,7 @@
 
 A dashboard of daily candlestick charts for global equity indices, commodities, and FX, built with Next.js and served as a static site on GitHub Pages. Price data is fetched from the Tiingo API via a scheduled GitHub Actions workflow and stored as CSV files — the browser never calls Tiingo directly.
 
-**Live:** `https://jaspalsinghau.github.io/experiments-with-claude/dashboards/markets`
+**Live:** `https://experiments.jaspalsingh.consulting/dashboards/markets`
 
 ---
 
@@ -54,9 +54,9 @@ GitHub Actions (scheduled Mon–Fri, 22:00 UTC)
     │
     ├─ Commits updated CSVs to main  (public/data/{TICKER}.csv)
     │
-    └─ npm run build  (NEXT_PUBLIC_BASE_PATH=/experiments-with-claude)
+    └─ npm run build
             Static export → out/
-            Deployed to GitHub Pages
+            Deployed to GitHub Pages (custom domain, served at root)
 ```
 
 The browser fetches the pre-built CSV files as static assets, parses them with `src/lib/csvParser.ts`, and renders the charts entirely client-side.
