@@ -10,6 +10,12 @@ const experiments = [
     title: 'Markets Overview',
     description: 'A dashboard of daily candlestick charts for global equity indices, commodities, and FX, built with Next.js and served as a static site on GitHub Pages. Price data is fetched from the Tiingo API via a scheduled GitHub Actions workflow and stored as CSV files — the browser never calls Tiingo directly.',
   },
+  {
+    href: '/experiments/particle-field',
+    icon: '✨',
+    title: 'Particle Field',
+    description: '12,000 particles drifting in cool aquatic tones, pulled toward your cursor and glowing red the closer they get — like a magnet through iron filings. Built with plain canvas 2D — no rendering libraries.',
+  },
 ];
 
 export default function HomePage() {
