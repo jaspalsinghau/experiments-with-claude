@@ -33,6 +33,10 @@ const INSTRUMENTS = [
   { ticker: 'audusd', type: 'forex' },
 ];
 
+// Longest normal gap between the newest bar and today: Fri close → Tue run over a long weekend.
+const MAX_STALE_DAYS = 5;
+const failures = [];
+
 mkdirSync(DATA_DIR, { recursive: true });
 
 function toYMD(isoString) {
@@ -55,16 +59,31 @@ function yearsAgo(n) {
   return d.toISOString().slice(0, 10);
 }
 
+function daysBetween(fromYmd, toYmd) {
+  return Math.round((Date.parse(toYmd + 'T00:00:00Z') - Date.parse(fromYmd + 'T00:00:00Z')) / 86400000);
+}
+
 function addDays(ymd, n) {
   const d = new Date(ymd + 'T00:00:00Z');
   d.setUTCDate(d.getUTCDate() + n);
   return d.toISOString().slice(0, 10);
 }
 
+// Throws with the HTTP status and Tiingo's error body (never the URL, which contains the token).
+async function httpError(label, res) {
+  let detail = '';
+  try {
+    detail = (await res.text()).replace(/\s+/g, ' ').slice(0, 200);
+  } catch {
+    // body unreadable; status alone will do
+  }
+  return new Error(`${label} returned ${res.status}${detail ? ` — ${detail}` : ''}`);
+}
+
 async function fetchStock(ticker, startDate) {
   const url = `https://api.tiingo.com/tiingo/daily/${ticker}/prices?startDate=${startDate}&token=${TOKEN}`;
   const res = await fetch(url);
-  if (!res.ok) throw new Error(`Tiingo stock ${ticker} returned ${res.status}`);
+  if (!res.ok) throw await httpError(`Tiingo stock ${ticker}`, res);
   const rows = await res.json();
   return rows.map((r) => ({
     date: toYMD(r.date),
@@ -79,7 +98,7 @@ async function fetchStock(ticker, startDate) {
 async function fetchForex(pair, startDate) {
   const url = `https://api.tiingo.com/tiingo/fx/${pair}/prices?startDate=${startDate}&resampleFreq=1day&token=${TOKEN}`;
   const res = await fetch(url);
-  if (!res.ok) throw new Error(`Tiingo forex ${pair} returned ${res.status}`);
+  if (!res.ok) throw await httpError(`Tiingo forex ${pair}`, res);
   const rows = await res.json();
   return rows.map((r) => ({
     date: toYMD(r.date),
@@ -137,6 +156,7 @@ for (const inst of INSTRUMENTS) {
       : await fetchStock(inst.ticker, startDate);
   } catch (err) {
     console.error(`${inst.ticker}: fetch failed — ${err.message}`);
+    failures.push(`${inst.ticker}: ${err.message}`);
     continue;
   }
 
@@ -158,6 +178,29 @@ for (const inst of INSTRUMENTS) {
   }
 
   console.log(`${inst.ticker}: wrote ${rows.length} rows (${rows[0].date} → ${rows[rows.length - 1].date})`);
+}
+
+// Staleness guard: an API that returns 200 with no rows (plan/entitlement problems, delisted
+// ticker) would otherwise look identical to "market closed". Allow for a long weekend.
+for (const inst of INSTRUMENTS) {
+  const csvPath = join(DATA_DIR, `${inst.ticker}.csv`);
+  const last = existsSync(csvPath) ? readLastDate(csvPath) : null;
+  if (!last) {
+    failures.push(`${inst.ticker}: no data in CSV`);
+    continue;
+  }
+  const age = daysBetween(last, today());
+  if (age > MAX_STALE_DAYS) {
+    failures.push(`${inst.ticker}: data is stale — last bar ${last} (${age} days old, limit ${MAX_STALE_DAYS})`);
+  }
+}
+
+if (failures.length > 0) {
+  // Fail the process so the GitHub Actions run goes red (and emails) instead of deploying stale data.
+  for (const f of failures) {
+    console.error(process.env.GITHUB_ACTIONS ? `::error title=Market data update failed::${f}` : `ERROR: ${f}`);
+  }
+  process.exit(1);
 }
 
 console.log('Done.');

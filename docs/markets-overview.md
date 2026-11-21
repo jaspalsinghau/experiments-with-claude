@@ -59,6 +59,8 @@ GitHub Actions (scheduled Mon–Fri, 22:00 UTC)
             Deployed to GitHub Pages (custom domain, served at root)
 ```
 
+**Failure behaviour:** `fetch-data.mjs` exits non-zero if any ticker fetch fails (e.g. Tiingo returns 403 for a bad or revoked key) or if any CSV's newest bar is more than 5 days old. That turns the Actions run red and skips the build and deploy, so the site keeps its last good data and you get a failure email instead of a silent green run. The next successful run backfills any gap automatically, because it fetches from the last date in each CSV.
+
 The browser fetches the pre-built CSV files as static assets, parses them with `src/lib/csvParser.ts`, and renders the charts entirely client-side.
 
 CSV format (`public/data/QQQ.csv`):
